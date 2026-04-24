@@ -57,10 +57,46 @@ export class HexGrid {
         for (let y = 0; y < this.h; y++) {
             this.triangles[y] = [];
             for (let x = 0; x < this.w; x++) {
-                const colour = x == 0 ? "red" : x == this.w-1 ? "blue" : "white";
+                const colour = x == 0 ? "red" : x == this.w-1 ? "blue" : "grey";
                 this.triangles[y][x] = new Triangle(colour, `${x},${y}`); // id is starting position
             }
         }
+    }
+
+    rotateTrianglesLeft(x: number, y: number ) {
+        [
+            this.triangles[y][x], //top
+            this.triangles[y][x+1], 
+            this.triangles[y+1][x+1], 
+            this.triangles[y+1][x],
+            this.triangles[y+1][x-1],
+            this.triangles[y][x-1],
+        ] = [
+            this.triangles[y][x+1],
+            this.triangles[y+1][x+1],
+            this.triangles[y+1][x],
+            this.triangles[y+1][x-1],
+            this.triangles[y][x-1],
+            this.triangles[y][x], // top goes left
+        ];
+    }
+
+    rotateTrianglesRight(x: number, y: number ) {
+        [
+            this.triangles[y][x], //top
+            this.triangles[y][x+1], 
+            this.triangles[y+1][x+1], 
+            this.triangles[y+1][x],
+            this.triangles[y+1][x-1],
+            this.triangles[y][x-1],
+        ] = [
+            this.triangles[y][x-1],
+            this.triangles[y][x], // top goes right
+            this.triangles[y][x+1],
+            this.triangles[y+1][x+1],
+            this.triangles[y+1][x],
+            this.triangles[y+1][x-1],
+        ];
     }
 }
 
@@ -84,11 +120,11 @@ export class HexGridPainter {
         for (let y = 0; y < this.grid.h; y++) {
             for (let x = 0; x < this.grid.w; x++) {
                 const triangle = this.grid.triangles[y][x];
-                const posX = x * (this.triangleSize + this.spacing);
-                const posY = y * (this.triangleSize + this.spacing);
+                const posX = x * (this.triangleSize + this.spacing*2/Math.sqrt(3))/2;
+                const posY = y * (this.triangleSize*Math.sqrt(3)/2 + this.spacing);
                 ctx.fillStyle = triangle.colour;
                 ctx.beginPath();
-                if (y % 2 === 0) {
+                if ((y+x) % 2 === 0) {
                     // Upwards pointing triangle
                     ctx.moveTo(posX, posY + this.triangleSize);
                     ctx.lineTo(posX + this.triangleSize / 2, posY);
@@ -131,6 +167,11 @@ col
 ---o---o---o---o---o---o---o---
 \ / \ / \ / \ / \ / \ / \ / \ /  row 5
  '---------------------------'
+
+0,0 triangle is upwards pointing
+1,0 and 0,1 triangles are downwards pointing
+1,1 triangle is upwards pointing
+so for each triangle, x+y even means upwards pointing, x+y odd means downwards pointing.
 
 Row 0 nodes connect row 0 and row 1 triangles.
 Even row nodes have odd columns.
