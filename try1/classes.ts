@@ -57,7 +57,7 @@ export class HexGrid {
         for (let y = 0; y < this.h; y++) {
             this.triangles[y] = [];
             for (let x = 0; x < this.w; x++) {
-                const colour = x == 0 ? "red" : x == this.w-1 ? "blue" : "grey";
+                const colour = x == 0 ? "red" : x == this.w-1 ? "blue" : "gray";
                 this.triangles[y][x] = new Triangle(colour, `${x},${y}`); // id is starting position
             }
         }

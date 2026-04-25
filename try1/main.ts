@@ -51,34 +51,8 @@ class Game {
     }
 
     private rotateAroundNode(node: { row: number; column: number }): void {
-        // Find triangles around this node
-        const trianglesToRotate: { triangle: any; x: number; y: number }[] = [];
-
-        // Check all adjacent positions
-        for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
-                const x = node.column + dx;
-                const y = node.row + dy;
-                if (x >= 0 && x < this.grid.w && y >= 0 && y < this.grid.h) {
-                    trianglesToRotate.push({
-                        triangle: this.grid.triangles[y][x],
-                        x: x,
-                        y: y
-                    });
-                }
-            }
-        }
-
-        // Simple rotation: cycle colors clockwise
-        if (trianglesToRotate.length >= 3) {
-            const colors = trianglesToRotate.map(t => t.triangle.colour);
-            // Rotate colors
-            const lastColor = colors[colors.length - 1];
-            for (let i = colors.length - 1; i > 0; i--) {
-                trianglesToRotate[i].triangle.setColour(colors[i - 1]);
-            }
-            trianglesToRotate[0].triangle.setColour(lastColor);
-        }
+        // Delegate rotation to the grid
+        this.grid.rotateTrianglesLeft(node.column, node.row);
     }
 
     private resetGrid(): void {
