@@ -4,14 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "build": "esbuild main.ts --bundle --outfile=dist/main.js --format=esm --sourcemap",
+    "watch": "esbuild main.ts --bundle --outfile=dist/main.js --format=esm --sourcemap --watch",
+    "serve": "npx --yes http-server -p 8080 -c-1 ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "dependencies": {
+    "konva": "^9.3.16"
+  },
   "devDependencies": {
     "@types/jest": "^30.0.0",
+    "esbuild": "^0.24.0",
     "jest": "^30.3.0",
     "ts-jest": "^29.4.9",
     "typescript": "^6.0.3"

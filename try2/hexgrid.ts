@@ -7,26 +7,70 @@ export type Point = {
 };
 
 export type RankDef = {
-    index: number;
-    offset: number;
-    files: number;
-}
+    index: number;   // 0 = first rank
+    offset: number;  // start file in N-units (1 N-unit = 2 file-cells)
+    files: number;   // width in N-units
+};
 
-
-// lets separate grid construction/logic from scaling to pixels, etc
-// these classes are for constructing the grid on the drawing context
+// One-shot factory for the initial slot layout. (col, row) here are abstract
+// integer axes; the renderer decides which is horizontal.
 export class GridShape {
-    // this allows for any shape of grid in the horizontal orientation,
-    // though we could just interpret it as being vertical too.
-    totalMUnits: number; // number of vertical units (2 rows of triangles) in the grid
-    totalNUnits: number; // number of horizontal units (columns of triangles) in the grid
-    // using units enforces functional shaping, though there could still be disconnected subgraphs
-    ranks: RankDef[]; // the ranks of the grid, where each rank is a horizontal slice of the grid
-    // (but could be interpreted as vertical if we wanted to)
-    constructor(totalMUnits: number, totalNUnits: number, ranks: RankDef[]) {
-        this.totalMUnits = totalMUnits;
-        this.totalNUnits = totalNUnits;
-        this.ranks = ranks;
+    readonly ranks: ReadonlyArray<RankDef>;
+    readonly totalMUnits: number;
+    readonly totalNUnits: number;
+
+    constructor(ranks: RankDef[]) {
+        if (ranks.length === 0) throw new Error("GridShape requires at least one rank");
+        this.ranks = [...ranks].sort((a, b) => a.index - b.index);
+        this.totalMUnits = Math.max(...ranks.map(r => r.index)) + 1;
+        this.totalNUnits = Math.max(...ranks.map(r => r.offset + r.files));
+    }
+
+    static rectangular(m: number, n: number): GridShape {
+        const ranks: RankDef[] = [];
+        for (let i = 0; i < m; i++) ranks.push({ index: i, offset: 0, files: n });
+        return new GridShape(ranks);
+    }
+
+    triangles(): Array<{ col: number; row: number }> {
+        const out: Array<{ col: number; row: number }> = [];
+        for (const rank of this.ranks) {
+            const top = rank.index * 2;
+            const minCol = rank.offset * 2;
+            const maxCol = (rank.offset + rank.files) * 2 - 2;
+            for (let row = top; row <= top + 1; row++) {
+                for (let col = minCol; col <= maxCol; col++) {
+                    out.push({ col, row });
+                }
+            }
+        }
+        return out;
+    }
+
+    nodes(): Array<{ col: number; row: number }> {
+        const out: Array<{ col: number; row: number }> = [];
+        const maxRow = this.totalMUnits * 2 - 1;
+        for (let row = 0; row < maxRow; row++) {
+            const colStart = row % 2 === 0 ? 1 : 2;
+            for (let col = colStart; col < this.totalNUnits * 2 - 1; col += 2) {
+                const around = [
+                    [col - 1, row],     [col, row],     [col + 1, row],
+                    [col - 1, row + 1], [col, row + 1], [col + 1, row + 1],
+                ];
+                if (around.every(([c, r]) => this.containsTriangle(c, r))) {
+                    out.push({ col, row });
+                }
+            }
+        }
+        return out;
+    }
+
+    private containsTriangle(col: number, row: number): boolean {
+        const rank = this.ranks.find(r => r.index === Math.floor(row / 2));
+        if (!rank) return false;
+        const minCol = rank.offset * 2;
+        const maxCol = (rank.offset + rank.files) * 2 - 2;
+        return col >= minCol && col <= maxCol;
     }
 }
 

@@ -1,6 +1,5 @@
 import {
     Point,
-    RankDef,
     GridShape,
     HexGrid,
     rotate,
@@ -236,23 +235,125 @@ describe("rotate", () => {
 // ---- GridShape --------------------------------------------------------------
 
 describe("GridShape", () => {
-    test("stores its constructor arguments verbatim", () => {
-        const ranks: RankDef[] = [
+    test("derives totalMUnits and totalNUnits from the ranks", () => {
+        const shape = new GridShape([
             { index: 0, offset: 0, files: 3 },
             { index: 1, offset: 1, files: 2 },
-        ];
-        const shape = new GridShape(2, 3, ranks);
-        expect(shape.totalMUnits).toBe(2);
-        expect(shape.totalNUnits).toBe(3);
-        expect(shape.ranks).toBe(ranks);
+        ]);
+        expect(shape.totalMUnits).toBe(2);   // 2 ranks
+        expect(shape.totalNUnits).toBe(3);   // max(offset + files): max(3, 3) = 3
+    });
+
+    test("totalNUnits accounts for ranks that extend further right via offset", () => {
+        const shape = new GridShape([
+            { index: 0, offset: 0, files: 2 },
+            { index: 1, offset: 3, files: 2 }, // extends to N-unit 5
+        ]);
+        expect(shape.totalNUnits).toBe(5);
+    });
+
+    test("sorts ranks by index regardless of input order", () => {
+        const shape = new GridShape([
+            { index: 2, offset: 0, files: 1 },
+            { index: 0, offset: 0, files: 1 },
+            { index: 1, offset: 0, files: 1 },
+        ]);
+        expect(shape.ranks.map(r => r.index)).toEqual([0, 1, 2]);
+    });
+
+    test("throws on empty ranks", () => {
+        expect(() => new GridShape([])).toThrow("GridShape requires at least one rank");
+    });
+
+    describe("rectangular factory", () => {
+        test("produces m ranks each spanning n N-units", () => {
+            const shape = GridShape.rectangular(3, 4);
+            expect(shape.totalMUnits).toBe(3);
+            expect(shape.totalNUnits).toBe(4);
+            expect(shape.ranks).toHaveLength(3);
+            for (const r of shape.ranks) {
+                expect(r.offset).toBe(0);
+                expect(r.files).toBe(4);
+            }
+        });
+    });
+
+    describe("triangles()", () => {
+        test("a 1x1 rectangular grid yields exactly 1 triangle (cols 0..0, rows 0..1)", () => {
+            const shape = GridShape.rectangular(1, 1);
+            const tris = shape.triangles();
+            expect(tris).toEqual([
+                { col: 0, row: 0 },
+                { col: 0, row: 1 },
+            ]);
+        });
+
+        test("a 1xN rectangular grid yields 2*(2N-1) triangles", () => {
+            const shape = GridShape.rectangular(1, 4);
+            // 2 triangle-rows * (2*4 - 1) = 2 * 7 = 14 triangles
+            expect(shape.triangles()).toHaveLength(14);
+        });
+
+        test("respects a rank's offset and files", () => {
+            const shape = new GridShape([
+                { index: 0, offset: 1, files: 2 }, // cols 2..4 (3 cols), rows 0..1
+            ]);
+            expect(shape.triangles()).toEqual([
+                { col: 2, row: 0 }, { col: 3, row: 0 }, { col: 4, row: 0 },
+                { col: 2, row: 1 }, { col: 3, row: 1 }, { col: 4, row: 1 },
+            ]);
+        });
+
+        test("emits every triangle exactly once", () => {
+            const shape = GridShape.rectangular(3, 8);
+            const tris = shape.triangles();
+            const seen = new Set(tris.map(t => `${t.col},${t.row}`));
+            expect(seen.size).toBe(tris.length);
+        });
+    });
+
+    describe("nodes()", () => {
+        test("a 1x1 rectangular grid has no valid pivot nodes", () => {
+            // 1 N-unit wide is 1 col total; no interior vertex has 6 neighbours
+            expect(GridShape.rectangular(1, 1).nodes()).toEqual([]);
+        });
+
+        test("matches try1's count formula for rectangular grids", () => {
+            // (n-1)*m + (n-2)*(m-1)
+            for (const [m, n] of [[3, 8], [2, 5], [4, 4]] as const) {
+                const expected = (n - 1) * m + (n - 2) * (m - 1);
+                expect(GridShape.rectangular(m, n).nodes()).toHaveLength(expected);
+            }
+        });
+
+        test("only emits pivots whose 6 surrounding triangles are all in the shape", () => {
+            const shape = GridShape.rectangular(3, 8);
+            const triSet = new Set(shape.triangles().map(t => `${t.col},${t.row}`));
+            for (const node of shape.nodes()) {
+                const around = [
+                    [node.col - 1, node.row],     [node.col, node.row],     [node.col + 1, node.row],
+                    [node.col - 1, node.row + 1], [node.col, node.row + 1], [node.col + 1, node.row + 1],
+                ];
+                for (const [c, r] of around) {
+                    expect(triSet.has(`${c},${r}`)).toBe(true);
+                }
+            }
+        });
+
+        test("even-row nodes have odd cols, odd-row nodes have even cols", () => {
+            const shape = GridShape.rectangular(3, 8);
+            for (const node of shape.nodes()) {
+                if (node.row % 2 === 0) expect(node.col % 2).toBe(1);
+                else expect(node.col % 2).toBe(0);
+            }
+        });
     });
 });
 
 // ---- HexGrid ----------------------------------------------------------------
 
 describe("HexGrid", () => {
-    const makeShape = (m = 2, n = 3) =>
-        new GridShape(m, n, [{ index: 0, offset: 0, files: n }]);
+    const makeShape = (m = 2, n = 3) => GridShape.rectangular(m, n);
 
     test("mirrors the gridShape unit counts into vUnits/hUnits", () => {
         const grid = new HexGrid(2, 0, 0.1, makeShape(4, 5));
