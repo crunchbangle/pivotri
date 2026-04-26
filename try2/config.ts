@@ -6,9 +6,9 @@ export const config = {
     nUnits: 8,
 
     // Geometry (pixels)
-    nodeSpacing: 150,    // distance between adjacent lattice nodes
+    nodeSpacing: 140,    // distance between adjacent lattice nodes
     triangleSide: 120,   // side length of each rendered triangle
-    nodeRadius: 40,      // radius of each node circle
+    nodeRadius: 20,      // radius of each node circle
 
     // Padding around the grid (so border triangles aren't clipped)
     padding: 60,
