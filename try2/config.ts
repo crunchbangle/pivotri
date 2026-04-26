@@ -20,8 +20,8 @@ export const config = {
     // Colours
     backgroundColor: 'white',
     nodeColor: '#444',           // dark gray
-    leftBorderColor: '#ffbf00',  // amber
-    rightBorderColor: '#1f77b4', // blue
+    topBorderColor: '#ffbf00',    // amber
+    bottomBorderColor: '#1f77b4', // blue
     interiorColor: '#d3d3d3',    // light gray
 
     // Stroke for triangles (set to null to disable)

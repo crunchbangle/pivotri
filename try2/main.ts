@@ -34,10 +34,10 @@ function trianglePoints(s: number, isUp: boolean): number[] {
         : [0,  rCirc, -s / 2, -rIn, s / 2, -rIn];
 }
 
-function initialColor(col: number): string {
-    const maxCol = config.nUnits * 2 - 2;
-    if (col === 0) return config.leftBorderColor;
-    if (col === maxCol) return config.rightBorderColor;
+function initialColor(_col: number, row: number): string {
+    // Top M-unit (= first 2 triangle-rows) is amber; bottom M-unit is blue.
+    if (row < 2) return config.topBorderColor;
+    if (row >= config.mUnits * 2 - 2) return config.bottomBorderColor;
     return config.interiorColor;
 }
 
@@ -79,7 +79,7 @@ for (const t of shape.triangles()) {
         x: c.x,
         y: c.y,
         rotation: 0,
-        fill: initialColor(t.col),
+        fill: initialColor(t.col, t.row),
         stroke: config.triangleStroke ?? undefined,
         strokeWidth: config.triangleStrokeWidth,
         closed: true,
