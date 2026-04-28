@@ -253,7 +253,9 @@ async function playDemo() {
             if (!demoRunning) break; // allow abort via reset
             const [col, row] = move.node.split(',').map(Number);
             await rotateAroundNode(col, row, move.direction as 1 | -1);
-            await new Promise(r => setTimeout(r, 200));
+            // Pacing: rotation animation is ~300ms; this delay brings the
+            // total to ~1s per move so the demo is followable.
+            await new Promise(r => setTimeout(r, 700));
         }
     } finally {
         demoRunning = false;

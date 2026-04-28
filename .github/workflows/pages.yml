@@ -40,10 +40,11 @@ jobs:
 
       - name: Stage site
         run: |
-          mkdir -p _site/dist
+          mkdir -p _site/dist _site/sim
           cp try2/index.html _site/
           cp try2/dist/main.js _site/dist/
           cp try2/dist/main.js.map _site/dist/ 2>/dev/null || true
+          cp try2/sim/shortest-game.json _site/sim/ 2>/dev/null || true
 
       - uses: actions/configure-pages@v5
 
