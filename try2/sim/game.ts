@@ -15,7 +15,9 @@ export interface GameState {
     shape: GridShape;
     triangles: ReadonlyMap<SlotKey, Colour>;
     turn: Player;
-    lastMove: ReadonlyMap<Player, Move>;
+    // The single most recent move, regardless of who made it. The current
+    // player can't reverse this on their turn (no-undo of opponent's move).
+    lastMove: Move | null;
     moveCount: number;
 }
 
@@ -105,7 +107,7 @@ export function createInitialState(shape: GridShape, layout: InitialLayout): Gam
         shape,
         triangles,
         turn: 'orange',  // earth moves first
-        lastMove: new Map(),
+        lastMove: null,
         moveCount: 0,
     };
 }
@@ -115,7 +117,7 @@ export function createInitialState(shape: GridShape, layout: InitialLayout): Gam
 export function legalMoves(state: GameState): Move[] {
     const moves: Move[] = [];
     const player = state.turn;
-    const lm = state.lastMove.get(player);
+    const lm = state.lastMove;
     for (const node of state.shape.nodes()) {
         const nodeKey = slotKey(node.col, node.row);
         const surrounding = surroundingKeys(nodeKey);
@@ -207,15 +209,13 @@ export function applyMove(state: GameState, move: Move): MoveResult {
     }
 
     const player = state.turn;
-    const newLastMove = new Map(state.lastMove);
-    newLastMove.set(player, move);
 
     return {
         state: {
             shape: state.shape,
             triangles: newTriangles,
             turn: opponent(player),
-            lastMove: newLastMove,
+            lastMove: move,
             moveCount: state.moveCount + 1,
         },
         destroyed: totalDestroyed,

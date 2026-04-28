@@ -60,17 +60,29 @@ section('Lookahead-3(orange) vs Greedy(blue) (50 games)',
 section('Lookahead-3 vs Lookahead-2 (50 games)',
     () => runMany(50, factory, lookaheadAgent(3), lookaheadAgent(2)));
 
-// Pick the shortest decisive game across all matchups that don't involve
-// a Random agent — random vs random will reliably trip into short blunders,
-// which aren't strategically interesting.
+// Prefer the shortest decisive game from a lookahead-vs-greedy matchup —
+// that's the most interesting watch (clear strategic depth + visible
+// counter-play). Fall back to any non-Random matchup if no lookahead-vs-
+// -greedy game decided.
+const isPreferred = (name: string) => /Lookahead/i.test(name) && /Greedy/i.test(name) && !/Lookahead.*Lookahead/i.test(name);
 let bestName = '';
 let best: NonNullable<Stats['shortestDecisive']> | null = null;
 for (const { name, stats } of allStats) {
-    if (/Random/.test(name)) continue;
+    if (!isPreferred(name)) continue;
     const sd = stats.shortestDecisive;
     if (sd && (best === null || sd.moveCount < best.moveCount)) {
         best = sd;
         bestName = name;
+    }
+}
+if (best === null) {
+    for (const { name, stats } of allStats) {
+        if (/Random/.test(name)) continue;
+        const sd = stats.shortestDecisive;
+        if (sd && (best === null || sd.moveCount < best.moveCount)) {
+            best = sd;
+            bestName = name;
+        }
     }
 }
 

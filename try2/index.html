@@ -2,14 +2,164 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>hexgame try2</title>
+    <title>pivotri</title>
     <style>
-        body { margin: 0; }
-        #container { display: block; margin: 0 auto; }
+        body { margin: 0; font-family: system-ui, sans-serif; background: #fafafa; }
+        .layout {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            padding: 16px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        #container { flex-shrink: 0; background: white; border-radius: 8px; }
+        #sidebar {
+            min-width: 220px;
+            background: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        #sidebar h2 { margin: 0 0 16px; font-size: 18px; font-weight: 600; }
+        #sidebar dl { margin: 0; }
+        #sidebar dt {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-top: 12px;
+        }
+        #sidebar dd {
+            margin: 2px 0 0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .turn-indicator {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .turn-orange { background: #e08a3c; }
+        .turn-blue   { background: #7cc7e8; color: #234; }
+        .row-pair { display: flex; gap: 16px; }
+        .row-pair > div { flex: 1; }
+        .swatch {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .swatch-orange { background: #e08a3c; }
+        .swatch-blue   { background: #7cc7e8; }
+        .toggle-row {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toggle-row input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .toggle-row label {
+            font-size: 13px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .canvas-wrap { position: relative; }
+        #game-over-banner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 24px 40px;
+            border-radius: 8px;
+            border: 2px solid #444;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            text-align: center;
+            z-index: 10;
+        }
+        #game-over-banner.hidden { display: none; }
+        .winner-text {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        .winner-text.turn-orange { color: #c46a1c; }
+        .winner-text.turn-blue   { color: #4a9bbf; }
+        #new-game-btn {
+            padding: 8px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid #888;
+            border-radius: 4px;
+            background: #f5f5f5;
+        }
+        #new-game-btn:hover { background: #e8e8e8; }
+        .sidebar-btn {
+            display: block;
+            width: 100%;
+            margin-top: 14px;
+            padding: 8px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #888;
+            border-radius: 4px;
+            background: #f5f5f5;
+        }
+        .sidebar-btn:hover:not(:disabled) { background: #e8e8e8; }
+        .sidebar-btn:disabled { cursor: default; opacity: 0.6; }
     </style>
 </head>
 <body>
-    <div id="container"></div>
+    <div class="layout">
+        <div class="canvas-wrap">
+            <div id="container"></div>
+            <div id="game-over-banner" class="hidden">
+                <div id="winner-text" class="winner-text"></div>
+                <button id="new-game-btn">New game</button>
+            </div>
+        </div>
+        <aside id="sidebar">
+            <h2>pivotri</h2>
+            <dl>
+                <dt>Turn</dt>
+                <dd><span id="current-turn" class="turn-indicator turn-orange">Earth</span></dd>
+
+                <dt>Moves</dt>
+                <dd id="move-count">0</dd>
+
+                <dt>Pieces on board</dt>
+                <dd>
+                    <div class="row-pair">
+                        <div><span class="swatch swatch-orange"></span>Earth: <strong id="orange-count">10</strong></div>
+                        <div><span class="swatch swatch-blue"></span>Sky: <strong id="blue-count">10</strong></div>
+                    </div>
+                </dd>
+
+                <dt>Earth gained / lost</dt>
+                <dd><span id="orange-gained">0</span> / <span id="orange-lost">0</span></dd>
+
+                <dt>Sky gained / lost</dt>
+                <dd><span id="blue-gained">0</span> / <span id="blue-lost">0</span></dd>
+            </dl>
+            <div class="toggle-row">
+                <input type="checkbox" id="rules-toggle" />
+                <label for="rules-toggle">Show rule effects</label>
+            </div>
+            <button id="demo-btn" class="sidebar-btn">Play demo</button>
+        </aside>
+    </div>
     <script type="module" src="dist/main.js"></script>
 </body>
 </html>

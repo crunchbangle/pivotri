@@ -10,7 +10,7 @@ A log of agent-vs-agent experiments testing the rules of pivotri. Each iteration
 
 **Anchoring.** A player can only pivot at a node that has at least one of their own triangles among the 6 around it.
 
-**No undo.** A player may not, on their next move, rotate the *same* node in the *opposite* direction (cancelling their own previous move). They *can* rotate the same node further in the same direction.
+**No undo.** A player may not reverse their *opponent's* most recent move — i.e. you can't rotate the just-played node in the opposite direction. You can freely re-rotate hexes from your own past moves (either direction).
 
 **Null-move prevention.** A rotation that produces no change to the board is illegal — i.e. you can't rotate a hex where all 6 surrounding triangles are your own colour.
 
@@ -274,4 +274,5 @@ Per game: ~22 destructions, ~30 conversions. About 10% of moves fire destruction
 - **Centre motif start** — pre-place the alternating-six pattern (3 orange + 3 blue around one node) at the centre of the board.
 - **Motif as checkpoint** — require *forming* the alternating-six motif somewhere on the board before either player can win the connection. Adds a forced mid-game phase.
 - **Variable rotation by piece count** — instead of a fixed ±60° rotation, rotate by *N* steps where *N* is one of: (a) the number of triangles around the node (always 6 — degenerate), (b) the number of *your* triangles around the node, or (c) your count − opponent count. Only one direction allowed (left-click only). Forces engagement with the count-around-this-node calculation on every move; rewards building presence around a hex (more pieces → stronger rotation effect). Variant (c) makes 0-rotation possible (null move when balanced), giving a defensive incentive to neutralise opponent setups.
+- **Conversion only at "extension" hexes** — the current rule lets a player rotate within their home rank (with a 120° subset already owned) and convert any neutrals there, replenishing back-rank pieces. The intended behaviour was that conversion should fire when triangles move *into a new hex*, not when rotating within established home territory. Possible variants: (a) only fire conversion if the rotated hex includes at least one neutral *that ends up in a previously-not-owned subset position*, (b) only fire if the moving player gains *new* coverage (i.e., the hex didn't already have the subset fully owned pre-rotation), (c) cap conversions per hex per game. Each needs a sim run to evaluate.
 

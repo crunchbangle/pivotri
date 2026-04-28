@@ -59,28 +59,36 @@ describe('legalMoves', () => {
             shape,
             triangles: tri,
             turn: 'orange' as const,
-            lastMove: new Map(),
+            lastMove: null,
             moveCount: 0,
         };
         // Every node is anchored (orange surrounds it) AND all-mine, so no moves at all.
         expect(legalMoves(state)).toHaveLength(0);
     });
 
-    test('no-undo prevents an immediately-reversed rotation', () => {
+    test('no-undo: a player cannot reverse the opponent\'s most-recent move', () => {
         let state = make3x3();
-        const move: Move = { node: '2,3', direction: 1 };
-        // Make sure that move is currently legal
-        expect(legalMoves(state).some(m => m.node === move.node && m.direction === move.direction)).toBe(true);
-        const afterOrange = applyMove(state, move).state;
-        // Blue moves something arbitrary
-        const blueMoves = legalMoves(afterOrange);
-        const blueMove = blueMoves[0]; // some legal blue move
-        const afterBlue = applyMove(afterOrange, blueMove).state;
-        // Now it's orange's turn again. The reverse rotation of '2,3' should NOT be legal.
-        const orangeAgain = legalMoves(afterBlue);
-        expect(orangeAgain.some(m => m.node === '2,3' && m.direction === -1)).toBe(false);
-        // The same direction is still legal (continue rotating)
-        expect(orangeAgain.some(m => m.node === '2,3' && m.direction === 1)).toBe(true);
+        // Orange plays first.
+        const orangeMove: Move = { node: '2,3', direction: 1 };
+        expect(legalMoves(state).some(m => m.node === orangeMove.node && m.direction === orangeMove.direction)).toBe(true);
+        state = applyMove(state, orangeMove).state;
+
+        // Blue's turn. Blue cannot reverse orange's move.
+        const blueLegal = legalMoves(state);
+        expect(blueLegal.some(m => m.node === '2,3' && m.direction === -1)).toBe(false);
+        // Same direction at same node is fine (continuing the rotation).
+        // (May or may not be legal depending on anchoring; just verify no-undo isn't blocking.)
+        // Pick any legal blue move and play it.
+        const blueMove = blueLegal[0];
+        state = applyMove(state, blueMove).state;
+
+        // Orange's turn. Orange CAN now reverse their own previous move at (2,3),
+        // because the most recent move was blue's, not orange's.
+        const orangeAgain = legalMoves(state);
+        expect(orangeAgain.some(m => m.node === '2,3' && m.direction === -1)).toBe(true);
+        // But orange CANNOT reverse blue's just-played move.
+        const reverseBlue = { node: blueMove.node, direction: -blueMove.direction as 1 | -1 };
+        expect(orangeAgain.some(m => m.node === reverseBlue.node && m.direction === reverseBlue.direction)).toBe(false);
     });
 });
 

@@ -1,7 +1,7 @@
 {
-  "sourceMatchup": "Greedy vs Greedy (500 games)",
-  "moveCount": 36,
-  "winner": "blue",
+  "sourceMatchup": "Lookahead-2(orange) vs Greedy(blue)",
+  "moveCount": 69,
+  "winner": "orange",
   "layout": {
     "mUnits": 3,
     "nUnits": 3,
@@ -18,8 +18,48 @@
       "direction": -1
     },
     {
-      "node": "3,2",
+      "node": "1,4",
       "direction": -1
+    },
+    {
+      "node": "3,0",
+      "direction": -1
+    },
+    {
+      "node": "2,3",
+      "direction": -1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "1,4",
+      "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "1,2",
+      "direction": -1
+    },
+    {
+      "node": "1,2",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
     },
     {
       "node": "1,2",
@@ -30,16 +70,128 @@
       "direction": -1
     },
     {
-      "node": "3,0",
+      "node": "2,3",
       "direction": -1
     },
     {
       "node": "3,4",
-      "direction": 1
+      "direction": -1
     },
     {
       "node": "2,1",
       "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "1,0",
+      "direction": -1
+    },
+    {
+      "node": "1,4",
+      "direction": -1
+    },
+    {
+      "node": "3,0",
+      "direction": -1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": -1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": -1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "3,0",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": -1
     },
     {
       "node": "3,2",
@@ -50,19 +202,7 @@
       "direction": 1
     },
     {
-      "node": "2,3",
-      "direction": 1
-    },
-    {
       "node": "3,2",
-      "direction": -1
-    },
-    {
-      "node": "2,1",
-      "direction": 1
-    },
-    {
-      "node": "2,3",
       "direction": -1
     },
     {
@@ -70,15 +210,15 @@
       "direction": -1
     },
     {
-      "node": "1,2",
+      "node": "2,3",
       "direction": 1
     },
     {
-      "node": "1,2",
+      "node": "2,1",
       "direction": 1
     },
     {
-      "node": "1,2",
+      "node": "3,2",
       "direction": 1
     },
     {
@@ -86,19 +226,39 @@
       "direction": -1
     },
     {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "3,0",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
       "node": "2,3",
       "direction": -1
     },
     {
-      "node": "3,4",
+      "node": "2,1",
       "direction": -1
     },
     {
-      "node": "2,3",
+      "node": "1,2",
       "direction": -1
     },
     {
-      "node": "3,4",
+      "node": "1,0",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
       "direction": -1
     },
     {
@@ -106,15 +266,7 @@
       "direction": -1
     },
     {
-      "node": "1,4",
-      "direction": -1
-    },
-    {
-      "node": "3,2",
-      "direction": -1
-    },
-    {
-      "node": "2,3",
+      "node": "2,1",
       "direction": -1
     },
     {
@@ -122,36 +274,16 @@
       "direction": -1
     },
     {
-      "node": "1,2",
-      "direction": -1
+      "node": "3,2",
+      "direction": 1
     },
     {
-      "node": "1,2",
+      "node": "3,0",
       "direction": -1
     },
     {
       "node": "3,2",
-      "direction": -1
-    },
-    {
-      "node": "2,3",
       "direction": 1
-    },
-    {
-      "node": "2,3",
-      "direction": 1
-    },
-    {
-      "node": "2,3",
-      "direction": 1
-    },
-    {
-      "node": "3,4",
-      "direction": -1
-    },
-    {
-      "node": "1,2",
-      "direction": -1
     }
   ]
 }
