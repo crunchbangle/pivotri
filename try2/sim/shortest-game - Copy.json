@@ -1,6 +1,6 @@
 {
   "sourceMatchup": "Greedy vs Greedy (500 games)",
-  "moveCount": 36,
+  "moveCount": 42,
   "winner": "blue",
   "layout": {
     "mUnits": 3,
@@ -11,14 +11,10 @@
   "history": [
     {
       "node": "2,3",
-      "direction": -1
+      "direction": 1
     },
     {
       "node": "2,1",
-      "direction": -1
-    },
-    {
-      "node": "3,2",
       "direction": -1
     },
     {
@@ -26,23 +22,43 @@
       "direction": -1
     },
     {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "2,3",
+      "direction": -1
+    },
+    {
+      "node": "1,0",
+      "direction": -1
+    },
+    {
+      "node": "2,3",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "3,0",
+      "direction": 1
+    },
+    {
       "node": "2,3",
       "direction": -1
     },
     {
       "node": "3,0",
-      "direction": -1
-    },
-    {
-      "node": "3,4",
       "direction": 1
     },
     {
-      "node": "2,1",
-      "direction": 1
-    },
-    {
-      "node": "3,2",
+      "node": "1,2",
       "direction": -1
     },
     {
@@ -50,35 +66,7 @@
       "direction": 1
     },
     {
-      "node": "2,3",
-      "direction": 1
-    },
-    {
       "node": "3,2",
-      "direction": -1
-    },
-    {
-      "node": "2,1",
-      "direction": 1
-    },
-    {
-      "node": "2,3",
-      "direction": -1
-    },
-    {
-      "node": "3,2",
-      "direction": -1
-    },
-    {
-      "node": "1,2",
-      "direction": 1
-    },
-    {
-      "node": "1,2",
-      "direction": 1
-    },
-    {
-      "node": "1,2",
       "direction": 1
     },
     {
@@ -86,19 +74,31 @@
       "direction": -1
     },
     {
+      "node": "3,0",
+      "direction": 1
+    },
+    {
+      "node": "1,0",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "3,0",
+      "direction": 1
+    },
+    {
       "node": "2,3",
       "direction": -1
     },
     {
-      "node": "3,4",
+      "node": "2,1",
       "direction": -1
     },
     {
-      "node": "2,3",
-      "direction": -1
-    },
-    {
-      "node": "3,4",
+      "node": "2,1",
       "direction": -1
     },
     {
@@ -106,7 +106,27 @@
       "direction": -1
     },
     {
+      "node": "3,0",
+      "direction": -1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
       "node": "1,4",
+      "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
       "direction": -1
     },
     {
@@ -114,44 +134,48 @@
       "direction": -1
     },
     {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
       "node": "2,3",
       "direction": -1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
     },
     {
       "node": "2,1",
       "direction": -1
     },
     {
-      "node": "1,2",
-      "direction": -1
-    },
-    {
-      "node": "1,2",
-      "direction": -1
-    },
-    {
-      "node": "3,2",
-      "direction": -1
-    },
-    {
       "node": "2,3",
       "direction": 1
     },
     {
-      "node": "2,3",
+      "node": "1,4",
       "direction": 1
-    },
-    {
-      "node": "2,3",
-      "direction": 1
-    },
-    {
-      "node": "3,4",
-      "direction": -1
-    },
-    {
-      "node": "1,2",
-      "direction": -1
     }
   ]
 }

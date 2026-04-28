@@ -47,10 +47,14 @@ export interface GameOutcome {
 
 // ---- rule toggles -----------------------------------------------------------
 
-// Set DESTRUCTION_THRESHOLD = Infinity to disable destruction entirely.
-// Set CONVERSION_ENABLED = false to disable conversion entirely.
-export const DESTRUCTION_THRESHOLD = 2;
+// CONVERSION_ENABLED: set false to disable conversion entirely.
+// DESTRUCTION_ENABLED: set false to disable destruction entirely.
+// STRICT_ISOLATION: when true, only triangles with all 3 edge-neighbours
+// in-grid are vulnerable (boundary triangles are immune). When false, any
+// triangle whose in-grid edge-neighbours are all opposite gets destroyed.
 export const CONVERSION_ENABLED = true;
+export const DESTRUCTION_ENABLED = true;
+export const STRICT_ISOLATION = true;
 
 // ---- helpers ----------------------------------------------------------------
 
@@ -170,24 +174,35 @@ export function applyMove(state: GameState, move: Move): MoveResult {
         }
     }
 
-    // Destruction at the rotated hex.
-    {
-        const colours = sur.map(k => newTriangles.get(k)!);
-        const orangeCount = colours.filter(c => c === 'orange').length;
-        const blueCount   = colours.filter(c => c === 'blue').length;
-        let dominator: Player | null = null;
-        if (orangeCount > 0 && blueCount > 0) {
-            if (orangeCount - blueCount >= DESTRUCTION_THRESHOLD) dominator = 'orange';
-            else if (blueCount - orangeCount >= DESTRUCTION_THRESHOLD) dominator = 'blue';
-        }
-        if (dominator !== null) {
-            const target: Player = opponent(dominator);
-            for (let i = 0; i < 6; i++) {
-                if (colours[i] === target) {
-                    newTriangles.set(sur[i], 'neutral');
-                    totalDestroyed++;
-                }
+    // Isolation-based destruction: any triangle whose in-grid edge-neighbours
+    // are all the opposite colour becomes neutral. We check the 6 around the
+    // rotated hex (their colours just changed) and their edge-neighbours
+    // (their neighbour-set changed). Snapshot-based — no destruction triggers
+    // another destruction.
+    if (DESTRUCTION_ENABLED) {
+        const snapshot = new Map(newTriangles);
+        const checkSet = new Set<SlotKey>();
+        for (let i = 0; i < 6; i++) {
+            checkSet.add(sur[i]);
+            for (const n of edgeNeighbours(sur[i])) {
+                if (snapshot.has(n)) checkSet.add(n);
             }
+        }
+        const toDestroy: SlotKey[] = [];
+        for (const triKey of checkSet) {
+            const colour = snapshot.get(triKey);
+            if (colour === undefined || colour === 'neutral') continue;
+            const opp = opponent(colour);
+            const ngs = edgeNeighbours(triKey).filter(n => snapshot.has(n));
+            if (ngs.length === 0) continue;
+            if (STRICT_ISOLATION && ngs.length < 3) continue;
+            if (ngs.every(n => snapshot.get(n) === opp)) {
+                toDestroy.push(triKey);
+            }
+        }
+        for (const triKey of toDestroy) {
+            newTriangles.set(triKey, 'neutral');
+            totalDestroyed++;
         }
     }
 

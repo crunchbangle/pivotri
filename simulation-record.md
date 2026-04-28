@@ -14,19 +14,12 @@ A log of agent-vs-agent experiments testing the rules of pivotri. Each iteration
 
 **Null-move prevention.** A rotation that produces no change to the board is illegal — i.e. you can't rotate a hex where all 6 surrounding triangles are your own colour.
 
-**Post-move effects** (impartial — fire based on configuration, not on who moved):
+**Post-move effects** (current rule set: v8, impartial — fire based on configuration, not on who moved):
 
-1. **Conversion (3 at 120°, runs first)** — if either player owns at least one full {0,2,4} or {1,3,5} subset around the hex, every neutral around that hex becomes their colour. (No "no opponent" check — opponents elsewhere don't block conversion.)
-2. **Domination (+3 destroys)** — if either side has ≥3 more pieces than the other around the hex (and the other has at least one piece), the other's pieces around that hex become neutral. Triggers: 4-1, 5-1.
+1. **Conversion (3 at 120°, runs first)** — if either player owns at least one full {0,2,4} or {1,3,5} subset around the rotated hex, every neutral around that hex becomes their colour. (No "no opponent" check — opponents elsewhere don't block conversion.) Only fires at the rotated hex.
+2. **Isolation (strict, runs second)** — a triangle is destroyed (becomes neutral) when all 3 of its in-grid edge-neighbours are the opposite colour. Triangles on the boundary with fewer than 3 in-grid edge-neighbours are immune. Only triangles in the rotated hex's surrounding *or* edge-adjacent to those are checked. Snapshot-based: all isolation results computed from the same post-conversion state, so destruction never triggers another destruction.
 
-**Propagation (limited).**
-
-- Rotation can fire conversions and destructions.
-- Conversion can fire destructions.
-- Conversion **cannot** fire another conversion.
-- Destruction **cannot** fire another destruction.
-
-Implementation: snapshot-based two-phase pass. Phase 1 (conversion) checks every hex affected by the rotation; phase 2 (destruction) checks every hex affected by rotation or phase-1 conversion. Neither phase cascades into itself.
+(See iterations 4-10 in the log for how we got here — earlier versions used cascading propagation and a +N threshold for destruction; both were too noisy for stable connections to form.)
 
 **Win condition.** A player wins when they hold an **edge-connected chain of their colour from row 0 (top) to the last triangle row (bottom)**. Adjacency is "two triangles share an edge" — every triangle has 3 edge-neighbours, all of the opposite up/down orientation. Checked for both colours after every move.
 
@@ -215,17 +208,65 @@ Shortest decisive interesting game (excluding random): **77 moves**, lookahead-3
 
 v6 (destruction disabled) is the more decisive, shorter, more playable rule set under the 200-move cap. v7 (full iteration 3) is more chaotic but most of its decisiveness is hidden by the cap.
 
+### Iteration 9 — isolation-based destruction, strict (v8)
+
+**Plan.** Replace the +N threshold destruction rule entirely. New rule: **a triangle is destroyed when all its in-grid edge-neighbours are the opposite colour.** "Strict" = a triangle is only ever vulnerable if it has all 3 edge-neighbours in-grid (so boundary triangles, which only have 1 or 2 in-grid neighbours, are immune to destruction). Conversion stays as in v3 (impartial, conversion-first, no "no opp" check). Snapshot-based: all isolation checks fire from the same post-conversion snapshot — destruction never triggers another destruction.
+
+The intuition: tie destruction to local adjacency rather than aggregate counts in a hex. Pieces that are surrounded by enemies die; pieces with at least one same-colour or neutral neighbour survive. Aligns thematically with the connection win condition (both rules speak the same geometric language). Also: in a 3×3 grid, this immunises the corners of row 0 and row 5 — the *starting territory of each player* — so the boundaries hold their shape and the game is fought through the middle.
+
+**Result.**
+
+| Matchup | Result |
+| --- | --- |
+| Random vs Random | 27 / 29 / 43% draws, mean 164, 1122 connections |
+| Greedy vs Random | 50 / 18 / 32% draws, mean 150 |
+| Random vs Greedy | 17 / 48 / 35% draws, mean 154 |
+| Greedy vs Greedy | 16 / 16 / 68% draws, mean 178 |
+| Lookahead-2 vs Greedy | 35 / 7 / 58% draws, mean 171 |
+| Lookahead-3 vs Greedy | 24 / 14 / 62% draws, mean 182 |
+| Lookahead-3 vs Lookahead-2 | 8 / 10 / 82% draws, mean 191 |
+
+Per game: ~22 destructions, ~30 conversions. About 10% of moves fire destruction (vs 50% under +2 threshold). Shortest decisive interesting game: **42 moves**, blue won (greedy-vs-greedy).
+
+**Insight.** The most playable rule set so far that still has destruction. Decisive in nontrivial matchups, lookahead-2 strongly beats greedy on offence (35-7), and per-move effect rates are an order of magnitude lower than threshold-destruction. The lookahead-3-vs-lookahead-2 wash (8-10) suggests the depth-vs-heuristic problem is still there but less catastrophic than under v3 rules.
+
+### Iteration 10 — isolation-based destruction, loose (v9)
+
+**Plan.** Same as v8 but with `STRICT_ISOLATION = false`: any triangle whose every in-grid edge-neighbour is opposite gets destroyed, regardless of how many in-grid neighbours it has. Boundary corners (1 in-grid neighbour) become destructible if that single neighbour is opposite. Test whether the extra destruction adds strategic depth or just noise.
+
+**Result (vs strict, side by side).**
+
+| Matchup | Strict | Loose |
+| --- | --- | --- |
+| Random vs Random | 27 / 29 / 43 | 27 / 27 / 46 |
+| Greedy vs Random | 50 / 18 / 32 | 45 / 18 / 37 |
+| Greedy vs Greedy | 16 / 16 / 68 | 16 / 11 / 72 |
+| Lookahead-2 vs Greedy | **35 / 7 / 58** | 29 / 4 / 67 |
+| Lookahead-3 vs Greedy | 24 / 14 / 62 | 28 / 2 / 70 |
+| Lookahead-3 vs L2 | 8 / 10 / 82 | 18 / 10 / 72 |
+| Per game destructions | 22 | 28 |
+| Random "no-moves" losses | 8 | **41** |
+| Shortest interesting game | 42 moves | 36 moves |
+
+**Insight.** **Strict wins on every metric that matters.**
+
+1. **Strict produces more decisive games in interesting matchups.** Lookahead-2 vs greedy: 42% decisive under strict vs 33% under loose. Greedy-vs-greedy: 32% vs 28%.
+2. **Loose's extra destruction doesn't translate to extra decisiveness.** It produces ~27% more destructions per game but the same or fewer connections form. The extra destruction is churn, not progress.
+3. **Loose causes degenerate "no-moves" losses.** 41 of 2000 random-vs-random games end with a player out of legal moves (vs 8 under strict). This is loose chewing through edge pieces until a player can't anchor — a structurally bad failure mode that strict avoids.
+
+**Decision: stick with strict isolation as the v8 rule set going forward.**
+
 ## Next iteration (planned)
 
-- **Replay viewer**: hook the saved game-history (`try2/sim/shortest-game.json`) into [try2/main.ts](try2/main.ts) so we can step through the shortest interesting decisive game and watch the rotation/conversion/destruction sequence visually. Stats won't surface tactical detail.
-- **Lookahead-4** if lookahead-3 shows meaningful gains over lookahead-2.
+- **Investigate the heuristic's depth issue.** Under every rule set we've tried, lookahead-3 is no better than lookahead-2 (and sometimes worse). The connection-distance term likely over-rewards "block opponent" moves; at depth, the agent commits to long blocking sequences that never advance. Worth: try alternative heuristic weights, or replace `(oppDist - myDist)` with something like `-myDist` (advance only) and see if depth then helps.
+- **Replay viewer.** Hook the saved game-history (try2/sim/shortest-game.json) into [try2/main.ts](try2/main.ts) so we can watch the 42-move greedy-vs-greedy decisive game and see what a winning chain looks like.
 
 ## Open questions
 
-- The 100× weight on distance vs piece-count in the heuristic is arbitrary. Worth a sweep to see if a different weight produces sharper greedy-vs-greedy games.
+- The 100× weight on distance vs piece-count in the heuristic is arbitrary. Probably the source of the lookahead-depth issue.
 - Should "this position is dead, declare it a draw" fire when both players have `connectionDistance === Infinity`? Currently only a heuristic signal; no auto-termination.
 - Does anchoring need any extra restriction (e.g. "isolated pieces don't anchor")?
-- Why does lookahead-2 do *worse* offensively than greedy on the destruction-disabled rule set? Likely an interaction between depth and the connection-distance heuristic — worth investigating before going to lookahead-4.
+- 200-move cap: is it the right number, or should it be 300 / unbounded? Greedy-vs-greedy under v8 averages 178, so 200 only catches the long tail.
 
 ## Possible future experiments (rule variants worth trying once we have a stable baseline)
 
@@ -233,3 +274,4 @@ v6 (destruction disabled) is the more decisive, shorter, more playable rule set 
 - **Centre motif start** — pre-place the alternating-six pattern (3 orange + 3 blue around one node) at the centre of the board.
 - **Motif as checkpoint** — require *forming* the alternating-six motif somewhere on the board before either player can win the connection. Adds a forced mid-game phase.
 - **Variable rotation by piece count** — instead of a fixed ±60° rotation, rotate by *N* steps where *N* is one of: (a) the number of triangles around the node (always 6 — degenerate), (b) the number of *your* triangles around the node, or (c) your count − opponent count. Only one direction allowed (left-click only). Forces engagement with the count-around-this-node calculation on every move; rewards building presence around a hex (more pieces → stronger rotation effect). Variant (c) makes 0-rotation possible (null move when balanced), giving a defensive incentive to neutralise opponent setups.
+
