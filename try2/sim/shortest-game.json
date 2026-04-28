@@ -1,0 +1,321 @@
+{
+  "sourceMatchup": "Lookahead-3(orange) vs Greedy(blue) (50 games)",
+  "moveCount": 77,
+  "winner": "orange",
+  "layout": {
+    "mUnits": 3,
+    "nUnits": 3,
+    "topRows": 2,
+    "bottomRows": 2
+  },
+  "history": [
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": -1
+    },
+    {
+      "node": "3,4",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": -1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "1,4",
+      "direction": -1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": -1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "1,0",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "1,0",
+      "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "1,4",
+      "direction": 1
+    },
+    {
+      "node": "1,0",
+      "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "3,4",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "1,0",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "3,0",
+      "direction": 1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "3,4",
+      "direction": -1
+    },
+    {
+      "node": "1,0",
+      "direction": -1
+    },
+    {
+      "node": "2,3",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "3,4",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "1,2",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "3,0",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": 1
+    },
+    {
+      "node": "3,0",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "3,0",
+      "direction": -1
+    },
+    {
+      "node": "3,2",
+      "direction": -1
+    },
+    {
+      "node": "3,0",
+      "direction": -1
+    },
+    {
+      "node": "3,0",
+      "direction": 1
+    },
+    {
+      "node": "3,0",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": 1
+    },
+    {
+      "node": "1,0",
+      "direction": -1
+    },
+    {
+      "node": "3,0",
+      "direction": 1
+    },
+    {
+      "node": "1,0",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    },
+    {
+      "node": "1,2",
+      "direction": -1
+    },
+    {
+      "node": "1,0",
+      "direction": -1
+    },
+    {
+      "node": "3,0",
+      "direction": -1
+    },
+    {
+      "node": "2,1",
+      "direction": -1
+    }
+  ]
+}

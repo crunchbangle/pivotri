@@ -3,7 +3,7 @@
 export const config = {
     // Grid shape
     mUnits: 3,
-    nUnits: 8,
+    nUnits: 3,
 
     // Geometry (pixels)
     nodeSpacing: 140,    // distance between adjacent lattice nodes
@@ -20,8 +20,8 @@ export const config = {
     // Colours
     backgroundColor: 'white',
     nodeColor: '#444',           // dark gray
-    topBorderColor: '#ffbf00',    // amber
-    bottomBorderColor: '#1f77b4', // blue
+    topBorderColor: '#7cc7e8',    // sky blue (lighter)
+    bottomBorderColor: '#e08a3c', // earth orange
     interiorColor: '#d3d3d3',    // light gray
 
     // Stroke for triangles (set to null to disable)

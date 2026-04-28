@@ -7,7 +7,8 @@
     "test": "jest",
     "build": "esbuild main.ts --bundle --outfile=dist/main.js --format=esm --sourcemap",
     "watch": "esbuild main.ts --bundle --outfile=dist/main.js --format=esm --sourcemap --watch",
-    "serve": "npx --yes http-server -p 8080 -c-1 ."
+    "serve": "npx --yes http-server -p 8080 -c-1 .",
+    "sim": "tsx sim/run.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,9 +19,11 @@
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
+    "@types/node": "^25.6.0",
     "esbuild": "^0.24.0",
     "jest": "^30.3.0",
     "ts-jest": "^29.4.9",
+    "tsx": "^4.19.0",
     "typescript": "^6.0.3"
   }
 }
